@@ -1,8 +1,11 @@
 """课堂实时字幕 —— 程序入口。
 
+日常使用请双击 run.bat（启动 desktop/ 下的 Electron 界面，它会自动在后台运行 --server）。
+
 用法：
-  python main.py                        正常使用：监听系统声音，显示字幕
-  python main.py --settings             打开设置窗口
+  python main.py --server               只运行后端服务，供 Electron 界面连接
+  python main.py                        经典界面（tkinter，Electron 不可用时的备用）
+  python main.py --settings             打开经典设置窗口
   python main.py --list-devices         列出可监听的输出设备
   python main.py --review [记录文件]     给一节课生成复习笔记（默认最新一节）
   python main.py --wav test.wav         用录音文件模拟上课（测试用）
@@ -69,10 +72,23 @@ def main() -> int:
                     help="生成课后笔记（不写文件名则用最新一节课）")
     ap.add_argument("--wav", default=None, help="用 wav 文件代替系统声音（测试）")
     ap.add_argument("--fast", action="store_true", help="配合 --wav：不按实时速度回放")
-    args = ap.parse_args()
+    ap.add_argument("--server", action="store_true", help="只运行后端服务（给 Electron 界面用）")
+    ap.add_argument("--port", type=int, default=0, help="配合 --server：端口，0 = 自动选")
+    ap.add_argument("--asr-model", default=None, help="临时覆盖识别模型（测试用）")
+    ap.add_argument("--asr-device", default=None, help="临时覆盖识别设备 auto/cuda/cpu（测试用）")
+    args, _unknown = ap.parse_known_args()  # Electron 可能带上它自己的参数，忽略
 
     cfg = load_config(args.config)
+    if args.asr_model:
+        cfg["asr"]["model"] = args.asr_model
+    if args.asr_device:
+        cfg["asr"]["device"] = args.asr_device
     setup_logging(cfg["_project_dir"])
+
+    if args.server:
+        from app.server import run_server
+
+        return run_server(cfg, port=args.port, wav=args.wav, realtime=not args.fast)
 
     if args.list_devices:
         from app.audio_capture import list_loopback_devices

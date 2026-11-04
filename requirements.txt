@@ -11,5 +11,6 @@ nvidia-cudnn-cu12
 anthropic>=2.0.0
 deep-translator>=1.11.4
 # 其他
+websockets>=13       # 后端和 Electron 界面之间的通信
 numpy>=1.24
 PyYAML>=6.0

@@ -1,0 +1,15 @@
+{
+  "name": "live-class-subtitles",
+  "version": "0.2.0",
+  "private": true,
+  "description": "课堂实时字幕：Electron 界面，后端是同目录上一级的 Python 程序",
+  "main": "main.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "smoke": "electron . --smoke"
+  },
+  "devDependencies": {
+    "electron": "45.2.2"
+  }
+}

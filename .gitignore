@@ -15,3 +15,6 @@ transcripts/
 # 测试生成的音频
 tests/*.wav
 tests/*.mp3
+
+# Electron 界面的依赖
+desktop/node_modules/

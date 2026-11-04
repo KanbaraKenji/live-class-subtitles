@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src ws://127.0.0.1:*">
+  <title>课堂实时字幕</title>
+  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="overlay.css">
+</head>
+<body class="auto">
+  <div id="card" class="card">
+    <header class="bar" id="bar">
+      <div class="status" id="status"><span class="dot idle" id="dot"></span><span id="status-text">正在启动…</span></div>
+      <div class="tools" id="tools">
+        <button data-act="pause" id="btn-pause"></button>
+        <button data-act="device" id="btn-device"></button>
+        <button data-act="source" id="btn-source" class="text on">原</button>
+        <span class="sep"></span>
+        <button data-act="font-down" class="text" title="字号减小（Ctrl+滚轮）">A−</button>
+        <button data-act="font-up" class="text" title="字号加大（Ctrl+滚轮）">A+</button>
+        <span class="sep"></span>
+        <button data-act="lock" id="btn-lock"></button>
+        <button data-act="settings" id="btn-settings" title="设置"></button>
+        <button data-act="more" id="btn-more" title="更多"></button>
+        <button data-act="close" id="btn-close" class="danger" title="退出"></button>
+      </div>
+    </header>
+    <main id="lines" class="lines"></main>
+    <div id="empty" class="empty">等待老师说话…</div>
+    <div id="fatal" class="fatal" hidden>
+      <div id="fatal-text"></div>
+      <button id="fatal-retry" class="pill-btn">重启识别服务</button>
+    </div>
+    <button id="jump" class="jump" hidden></button>
+  </div>
+
+  <div class="edge edge-l" data-edge="l"></div>
+  <div class="edge edge-r" data-edge="r"></div>
+  <div class="edge edge-t" data-edge="t" title="拖动调高度，双击恢复自动高度"></div>
+  <div class="edge corner-tl" data-edge="tl"></div>
+  <div class="edge corner-tr" data-edge="tr"></div>
+
+  <button id="unlock" class="unlock"></button>
+
+  <script src="icons.js"></script>
+  <script src="backend.js"></script>
+  <script src="overlay.js"></script>
+</body>
+</html>

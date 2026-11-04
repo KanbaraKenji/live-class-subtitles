@@ -1,0 +1,96 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Security-Policy"
+        content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src ws://127.0.0.1:*">
+  <title>设置 · 课堂实时字幕</title>
+  <link rel="stylesheet" href="common.css">
+  <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+  <header class="titlebar">
+    <span class="app-ic" id="app-ic"></span>
+    <span class="title">设置</span>
+  </header>
+
+  <main class="page" id="page">
+    <div class="welcome" id="welcome" hidden>
+      <div class="welcome-title">欢迎使用课堂实时字幕</div>
+      <div class="welcome-text">先选好老师讲的语言和翻译方式。之后随时可以在字幕窗的 ⋯ 菜单或托盘图标里打开这里修改。</div>
+    </div>
+
+    <section class="card">
+      <h2><span data-ic="globe"></span>课堂</h2>
+      <div class="field">
+        <label>老师讲的语言</label>
+        <div class="seg" id="language"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span data-ic="sparkles"></span>翻译</h2>
+      <div class="field">
+        <label>翻译方式</label>
+        <div class="choices cols-3" id="backend"></div>
+      </div>
+      <div class="claude-only" id="claude-only">
+        <div class="field">
+          <label for="api-key">Claude API Key</label>
+          <div class="key-row">
+            <span class="key-ic" data-ic="key"></span>
+            <input id="api-key" type="password" autocomplete="off" spellcheck="false" placeholder="sk-ant-…">
+            <button class="icon-btn" id="key-eye" title="显示 / 隐藏"></button>
+          </div>
+          <p class="hint" id="key-hint"></p>
+        </div>
+        <div class="field">
+          <label>模型</label>
+          <div class="choices cols-3" id="model"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span data-ic="mic"></span>语音识别</h2>
+      <div class="field">
+        <label>识别模型</label>
+        <div class="choices cols-2" id="asr_model"></div>
+      </div>
+      <div class="field">
+        <label>识别用的硬件</label>
+        <div class="seg" id="asr_device"></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span data-ic="captions"></span>字幕</h2>
+      <div class="toggle-row">
+        <div>
+          <div class="toggle-title">边说边出字</div>
+          <div class="hint">老师说话过程中先显示浅色的临时字幕，一段说完再换成正式字幕</div>
+        </div>
+        <button class="switch" id="partials" role="switch" aria-checked="true"><span></span></button>
+      </div>
+    </section>
+
+    <section class="card">
+      <h2><span data-ic="book"></span>课程背景 / 术语</h2>
+      <textarea id="glossary" rows="4" spellcheck="false"
+                placeholder="例如：&#10;课程：泰语 Level 3，在线授课。&#10;老师：Ajarn Somchai。同学：Tom、Lisa。"></textarea>
+      <p class="hint">会一起发给翻译模型，人名、课程名和教材里的专有名词会翻得更准确。</p>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="msg" id="msg"></div>
+    <button class="btn ghost" id="cancel">取消</button>
+    <button class="btn" id="save">仅保存</button>
+    <button class="btn primary" id="save-restart">保存并重启</button>
+  </footer>
+
+  <script src="icons.js"></script>
+  <script src="backend.js"></script>
+  <script src="settings.js"></script>
+</body>
+</html>
