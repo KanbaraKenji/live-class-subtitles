@@ -62,7 +62,7 @@ flowchart LR
 ## 安装
 
 ```bash
-git clone https://github.com/<你的用户名>/live-class-subtitles.git
+git clone https://github.com/KanbaraKenji/live-class-subtitles.git
 cd live-class-subtitles
 ```
 
