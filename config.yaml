@@ -1,0 +1,64 @@
+# 课堂实时字幕 —— 通用配置
+#
+# 大多数人不需要改这个文件：常用选项（课堂语言、翻译方式、API Key、模型）
+# 在字幕窗右键菜单「设置…」里改，会保存到 user_settings.json，优先于这里。
+# 改完保存，重新启动程序生效。
+
+audio:
+  # 监听哪个输出设备。留空 = 跟随系统默认播放设备（Zoom/Teams 声音从哪出就监听哪）。
+  # 也可以在字幕窗顶栏 🔊 按钮里直接选，选择会被记住。
+  device: ""
+
+vad:
+  aggressiveness: 2      # 0~3，背景噪音大时调到 3
+  silence_ms: 600        # 老师停顿多久算一段话结束（越小字幕越快出，但句子越碎）
+  min_segment_s: 1.0     # 短于 1 秒的片段（语气词）直接丢弃
+  max_segment_s: 6       # 一段最长秒数，超过就在声音最弱处切开
+  soft_segment_s: 4      # 说满这么久后，遇到 soft_silence_ms 的短停顿就提前切
+  soft_silence_ms: 250
+  partial_interval_s: 2  # 边说边出字：说话过程中每 2 秒做一次快速中间识别（浅色显示），0 = 关闭
+
+asr:
+  model: large-v3        # large-v3 最准；显存不够可改 medium（约 2GB）或 small
+  device: auto           # auto / cuda / cpu
+  compute_type: auto     # auto（GPU 用 float16，CPU 用 int8）
+  language: th           # 课堂语言：th 泰语 / en 英语 / ja 日语 / ko 韩语 / vi 越南语 / auto 自动识别
+  beam_size: 3           # 越大越准但越慢
+  workers: 2             # 并行识别线程数
+  initial_prompt: ""     # 给识别模型的提示词（课堂语言写），短句时偶尔会被"复读"，默认留空
+
+translate:
+  backend: claude        # claude（推荐，需要 API Key）/ free（免费：Google→MyMemory，质量一般）/ none（只显示原文）
+  model: claude-haiku-5-5  # 字幕要快：haiku 每句约 1~1.5 秒；sonnet / opus 更准但更慢
+  effort: low
+  context_turns: 6       # 翻译时参考前几句，保证上下文连贯
+  workers: 5             # 并发翻译线程数；正式译文优先于中间译文
+  translate_partials: true  # 中间识别结果也翻译（字幕更即时，API 调用约多一倍）
+  fix_glosses: false     # 译文里有裸露外文词时再请求一次补括号释义（更准，但平均慢约 0.4 秒）
+  # 给翻译模型的课程背景/术语/人名，例如：
+  #   课程：泰语 Level 3，在线授课。
+  #   老师：Ajarn Somchai。同学：Tom、Lisa。
+  glossary: ""
+
+review:
+  model: claude-opus-5-5 # 课后笔记用的模型（不追求速度）
+  effort: medium
+
+hotkeys:                 # 全局快捷键（在其他窗口里也能用）
+  enabled: true
+  toggle_visible: ctrl+alt+h   # 显示 / 隐藏字幕
+  toggle_pause: ctrl+alt+p     # 暂停 / 继续
+  toggle_lock: ctrl+alt+l      # 锁定字幕（鼠标点击会穿透到下面的窗口）/ 解锁
+
+ui:
+  lines: 3               # 自动高度时显示几句
+  show_source: true      # 显示原文
+  font_zh: 24            # 中文字号
+  font_src: 14           # 原文字号
+  width_ratio: 0.6       # 字幕窗初始宽度占屏幕的比例
+  opacity: 0.9
+  # 位置、宽度、字号、透明度会自动记在 ui_state.json；右键菜单「重置位置和大小」可恢复
+
+log:
+  enabled: true          # 每节课自动保存原文和译文到 transcripts/，课后可复习、生成笔记
+  dir: transcripts

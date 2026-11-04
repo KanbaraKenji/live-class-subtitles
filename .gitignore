@@ -1,0 +1,17 @@
+# 运行环境
+.venv/
+__pycache__/
+*.pyc
+
+# 个人信息：API Key、个人设置、窗口状态（绝不能上传）
+.env
+user_settings.json
+ui_state.json
+
+# 运行产物：日志、课堂记录（含同学姓名等隐私）
+logs/
+transcripts/
+
+# 测试生成的音频
+tests/*.wav
+tests/*.mp3

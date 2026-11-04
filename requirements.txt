@@ -1,0 +1,15 @@
+# 音频捕获（WASAPI 回环）
+pyaudiowpatch>=0.2.12
+# 语音活动检测
+webrtcvad-wheels>=2.0.14
+# 语音识别（本地 Whisper）
+faster-whisper>=1.2.0
+# GPU 运行库（CUDA 12 + cuDNN 9），没有 NVIDIA 显卡也能装，只是用不上
+nvidia-cublas-cu12
+nvidia-cudnn-cu12
+# 翻译
+anthropic>=2.0.0
+deep-translator>=1.11.4
+# 其他
+numpy>=1.24
+PyYAML>=6.0

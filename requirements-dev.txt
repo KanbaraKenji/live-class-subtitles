@@ -1,0 +1,4 @@
+# 开发和测试用，日常使用不需要
+-r requirements.txt
+edge-tts>=7.0     # tools/make_test_audio.py 生成泰语测试音频
+pillow>=10.0      # tests/ui_smoke.py 截图
