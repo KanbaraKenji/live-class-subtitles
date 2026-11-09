@@ -277,6 +277,24 @@ class Pipeline:
         self._emit("status", text=f"模型就绪（{self.asr.device}/{self.asr.compute_type}），监听中")
         for i in range(self.asr.workers):
             self._spawn(self._asr_worker, f"asr-{i}")
+        if self.asr.device == "cuda":
+            self._spawn(self._vram_watch, "vram-watch")
+
+    def _vram_watch(self) -> None:
+        """模型加载完马上查一次剩余显存，之后每分钟查一次；不够时在状态栏提醒。"""
+        from .gpu import VramWatch
+
+        watch = VramWatch()
+        delay = 1.0  # 先让“模型就绪”显示一下，再给提醒
+        while not self._stop.wait(delay):
+            try:
+                msg = watch.check()
+            except Exception:
+                log.exception("显存检查出错")
+                msg = None
+            if msg:
+                self._emit("status", text=msg)
+            delay = 60.0
 
     def _asr_worker(self) -> None:
         gap = np.zeros(int(16000 * 0.3), dtype=np.float32)

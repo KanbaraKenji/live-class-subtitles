@@ -33,20 +33,23 @@ function hk(action) {
 }
 
 // ---------- 状态栏 ----------
+let statusLevel = null; // 'warn' | 'err' | null：提醒没被新的状态替换前，圆点一直保持提醒色
+
 function setStatus(text) {
   $('#status-text').textContent = text;
   const err = /^错误|无法|反复退出/.test(text);
   const warn = !err && /跟不上|失败|跳过|没听到|占用|超时/.test(text);
   $('#status').classList.toggle('warn', warn);
   $('#status').classList.toggle('err', err);
-  updateDot(warn ? 'warn' : err ? 'err' : null);
+  statusLevel = warn ? 'warn' : err ? 'err' : null;
+  updateDot();
 }
 
-function updateDot(level) {
+function updateDot() {
   const dot = $('#dot');
   const loading = /加载|启动/.test($('#status-text').textContent);
   dot.className = 'dot';
-  if (level) dot.classList.add(level);
+  if (statusLevel) dot.classList.add(statusLevel);
   else if (paused) dot.classList.add('paused');
   else if (loading) dot.classList.add('idle');
   else if (speaking) dot.classList.add('speaking');

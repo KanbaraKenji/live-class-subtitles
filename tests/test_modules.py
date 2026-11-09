@@ -167,7 +167,30 @@ def test_review_compact() -> None:
     print("笔记记录压缩 OK")
 
 
+def test_vram_check() -> None:
+    from app import gpu
+
+    assert gpu.parse_vram("7362, 8192\n") == (7362 / 1024, 8.0)
+    assert gpu.parse_vram("garbage") is None
+    csv_text = '"System","4","Services","0","5,624 K"\n"LM Studio.exe","36000","Console","1","200 K"\n' \
+               '"LM Studio.exe","37676","Console","1","100 K"\n"ollama.exe","1","Console","1","1 K"\n'
+    assert gpu.parse_gpu_apps(csv_text) == ["LM Studio", "Ollama"]
+    # 上节课的真实情况：已用 7362 / 8192 MiB → 只剩 0.8GB，应该提醒并点名 LM Studio
+    msg = gpu.vram_warning(7362 / 1024, 8.0, ["LM Studio"])
+    assert msg and "0.8GB" in msg and "LM Studio" in msg and "占用" in msg
+    assert gpu.vram_warning(5.0, 8.0, []) is None
+
+    # 同一次显存紧张只提醒一次，恢复后才会再提醒
+    seq = iter([(7.5, 8.0), (7.6, 8.0), (6.0, 8.0), (7.5, 8.0)])
+    gpu.query_vram, gpu.running_gpu_apps = (lambda: next(seq)), (lambda: [])
+    w = gpu.VramWatch()
+    got = [w.check() is not None for _ in range(4)]
+    assert got == [True, False, False, True], got
+    print("显存检查 OK")
+
+
 if __name__ == "__main__":
+    test_vram_check()
     test_config()
     test_resample()
     test_segmenter()

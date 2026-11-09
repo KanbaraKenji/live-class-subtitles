@@ -310,7 +310,7 @@ class SubtitleOverlay:
         t = ev.get("type")
         if t == "status":
             self.status_text, self.status_color = ev["text"], FG_STATUS
-            if any(k in ev["text"] for k in ("跟不上", "失败", "跳过", "没听到", "错误")):
+            if any(k in ev["text"] for k in ("跟不上", "失败", "跳过", "没听到", "错误", "占用", "超时")):
                 self.status_color = FG_WARN
             return True
         if t == "speech":
