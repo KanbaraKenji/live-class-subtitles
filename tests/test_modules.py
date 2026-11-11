@@ -157,7 +157,10 @@ def test_hotkey_parse() -> None:
 
 
 def test_review_compact() -> None:
-    from app.review import compact_transcript, notes_path_for
+    from app.review import compact_transcript, notes_path_for, strip_leading_title
+
+    assert strip_leading_title("# 泰语课复习笔记\n\n## 本节课概要\n内容") == "## 本节课概要\n内容"
+    assert strip_leading_title("## 本节课概要\n内容") == "## 本节课概要\n内容"
 
     md = ("# 课堂记录\n\n**[21:00:01]** สวัสดีค่ะ\n\n> 大家好\n\n**[21:00:05]** อืม\n\n> …\n\n"
           "**[21:00:09]** ไปทำงานไหม\n\n> （翻译失败：503）\n\n**[21:00:12]** กินข้าวไหม\n\n> 吃饭吗？\n\n")

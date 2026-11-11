@@ -66,6 +66,13 @@ def compact_transcript(text: str) -> tuple[str, int]:
     return "\n".join(lines), len(lines)
 
 
+def strip_leading_title(notes: str) -> str:
+    lines = notes.lstrip().splitlines()
+    if lines and lines[0].startswith("# "):
+        lines = lines[1:]
+    return "\n".join(lines).strip()
+
+
 def notes_path_for(transcript: Path) -> Path:
     return transcript.with_name(f"{transcript.stem}_笔记.md")
 
@@ -116,6 +123,7 @@ def generate_notes(
     if resp.stop_reason == "refusal":
         raise RuntimeError("模型拒绝了这次请求")
     notes = "".join(b.text for b in resp.content if b.type == "text").strip()
+    notes = strip_leading_title(notes)  # 程序会自己加标题，模型自带的一级标题去掉，免得出现两个
     if not notes:
         raise RuntimeError("模型没有返回内容")
     if resp.stop_reason == "max_tokens":
