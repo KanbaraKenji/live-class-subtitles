@@ -50,8 +50,10 @@ _META_MARKERS = (
     "识别不清", "识别内容", "识别不太", "识别结果", "无法确定", "建议以", "视上下文", "老师在", "老师说", "老师的意思",
     "请跟读", "请注意", "可能是", "或其他", "识别错误", "此处", "不确定", "这里应该", "疑似", "注：", "备注",
     "（译注", "译注", "我省略", "省略", "大概是", "像是", "之类", "这句话里", "这段", "含义不明", "听不清",
-    "识别不完整", "不完整）", "（识别",
+    "识别不完整", "不完整）", "（识别", "识别有误", "只能确定",
 )
+# 括号里的旁白，如“（这句识别有误，我只能确定：）家里淹了。”：只去掉括号，保留后面的译文
+_PAREN = re.compile(r"（[^（）]*）")
 _SENT_SPLIT = re.compile(r"(?<=[。！？!?；;…])")
 # “中文（原文（中文））”这种双重标注 → “中文（原文）”
 _NESTED_GLOSS = re.compile(r"（([^（）]+?)（[^（）]*））")
@@ -96,7 +98,8 @@ def clean_translation(text: str) -> str:
             text = text[len(prefix):].strip()
     if text[:1] in "“\"「" and text[-1:] in "”\"」":
         text = text[1:-1].strip()
-    parts =[p for p in _SENT_SPLIT.split(text) if p.strip()]
+    text = _PAREN.sub(lambda m: "" if any(k in m[0] for k in _META_MARKERS) else m[0], text).strip()
+    parts = [p for p in _SENT_SPLIT.split(text) if p.strip()]
     kept = [p for p in parts if not any(m in p for m in _META_MARKERS)]
     if parts and not kept:
         return "…"

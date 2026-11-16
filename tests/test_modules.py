@@ -132,6 +132,7 @@ def test_languages_and_cleaning() -> None:
         "老师说：大家好。": "大家好。",                                   # 前缀
         "这段识别内容不清楚，我省略。": "…",                              # 旁白
         "然后是 ทำงาน（工作）。": "然后是 ทำงาน（工作）。",
+        "（这句识别有误，我只能确定：）家里那边淹了。": "家里那边淹了。",   # 括号里的旁白（11-16 课上出现）
     }
     for src, want in cases.items():
         got = clean_translation(src)
