@@ -303,7 +303,11 @@ document.addEventListener('pointermove', (e) => {
   const dy = e.screenY - gesture.sy;
   const { x, y, width, height } = gesture.b;
   if (gesture.kind === 'move') {
-    window.lcs.send('overlay:move', x + dx, y + dy);
+    // 单击时手会轻微抖动：移动不到 4 像素不算拖动，窗口不动
+    if (!gesture.dragging && Math.abs(dx) < 4 && Math.abs(dy) < 4) return;
+    gesture.dragging = true;
+    // 宽高一起传过去固定住：150% 缩放的屏幕上只改位置，窗口每挪一次会变大一两个像素
+    window.lcs.send('overlay:move', { x: x + dx, y: y + dy, width, height });
     return;
   }
   const nb = { x, y, width, height };

@@ -377,7 +377,10 @@ function inProject(p) {
 ipcMain.handle('state:get', () => state);
 ipcMain.on('state:save', (_e, patch) => saveState(patch));
 ipcMain.handle('overlay:bounds', () => overlay && overlay.getBounds());
-ipcMain.on('overlay:move', (_e, x, y) => overlay && overlay.setPosition(Math.round(x), Math.round(y)));
+// 用 setBounds 带上原来的宽高，不用 setPosition：缩放不是 100% 的屏幕上 setPosition 每调用一次窗口都会变大一点
+ipcMain.on('overlay:move', (_e, b) => overlay && overlay.setBounds({
+  x: Math.round(b.x), y: Math.round(b.y), width: Math.round(b.width), height: Math.round(b.height),
+}));
 ipcMain.on('overlay:set-bounds', (_e, b) => overlay && overlay.setBounds(clampToScreen({
   x: Math.round(b.x), y: Math.round(b.y), width: Math.round(b.width), height: Math.round(b.height),
 })));
